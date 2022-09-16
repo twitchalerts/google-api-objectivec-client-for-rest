@@ -638,16 +638,7 @@ static NSDictionary *MergeDictionaries(NSDictionary *recessiveDict, NSDictionary
   }
 
   GTMSessionFetcherService *fetcherService = ticket.fetcherService;
-  GTMSessionFetcher *fetcher;
-
-  if (uploadParams == nil || uploadParams.shouldUploadWithSingleRequest) {
-    // Create a single-request fetcher.
-    fetcher = [fetcherService fetcherWithRequest:request];
-  } else {
-    fetcher = [self uploadFetcherWithRequest:request
-                              fetcherService:fetcherService
-                                      params:uploadParams];
-  }
+  GTMSessionFetcher *fetcher = [self fetcherWithRequest:request fetcherService:fetcherService params:uploadParams];
 
   if (ticket.allowInsecureQueries) {
     fetcher.allowLocalhostRequest = YES;
@@ -836,6 +827,19 @@ static NSDictionary *MergeDictionaries(NSDictionary *recessiveDict, NSDictionary
   }
 
   return ticket;
+}
+
+- (GTMSessionFetcher *)fetcherWithRequest:(NSURLRequest *)request
+                           fetcherService:(GTMSessionFetcherService *)fetcherService
+                                   params:(GTLRUploadParameters *)uploadParams {
+  if (uploadParams == nil || uploadParams.shouldUploadWithSingleRequest) {
+    // Create a single-request fetcher.
+    return [fetcherService fetcherWithRequest:request];
+  } else {
+    return [self uploadFetcherWithRequest:request
+                           fetcherService:fetcherService
+                                   params:uploadParams];
+  }
 }
 
 - (GTMSessionUploadFetcher *)uploadFetcherWithRequest:(NSURLRequest *)request

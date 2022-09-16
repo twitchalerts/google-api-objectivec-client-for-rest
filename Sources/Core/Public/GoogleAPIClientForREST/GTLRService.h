@@ -244,6 +244,12 @@ typedef void (^GTLRServiceTestBlock)(GTLRServiceTicket *testTicket,
                            delegate:(nullable id)delegate
                   didFinishSelector:(nullable SEL)finishedSelector;
 
+/*
+ * Override this if you need more control over network request fetcher.
+ */
+- (GTMSessionFetcher *)fetcherWithRequest:(NSURLRequest *)request
+                           fetcherService:(GTMSessionFetcherService *)fetcherService
+                                   params:(GTLRUploadParameters *)uploadParams;
 
 /**
  *  Enable automatic pagination.
